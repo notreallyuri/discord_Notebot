@@ -1,0 +1,11 @@
+{
+	"scripts": {
+		"server": "bun run ./index.ts",
+		"deploy": "bun run ./src/deployer.ts"
+	},
+	"dependencies": {
+		"@eslint/js": "^9.21.0",
+		"discord.js": "^14.18.0",
+		"eslint": "^9.21.0"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "ES2022",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true
+	},
+	"include": ["src/**/*.ts", "index.ts"],
+	"exclude": ["node_modules"]
+}
