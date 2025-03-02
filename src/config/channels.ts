@@ -21,6 +21,7 @@ export function setDoorChannels(
 		guildData.guilds[guildId] = {
 			DoorChannels: { welcome: null, goodbye: null },
 			DoorMessages: { welcomeMessage: undefined, goodbyMessage: undefined },
+			users: [undefined],
 		};
 	}
 

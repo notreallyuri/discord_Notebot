@@ -8,12 +8,31 @@ export interface DoorChannels {
 	goodbye: string | null;
 }
 
+interface Message {
+	title: string | null;
+	content: string | null;
+}
+
+export interface DoorMessages {
+	welcomeMessage: Message | undefined;
+	goodbyMessage: Message | undefined;
+}
+
+export interface Note {
+	id: number;
+	title: string;
+	content: string | null;
+}
+
+export interface User {
+	id: string;
+	notes: Array<Note | undefined>;
+}
+
 export interface GuildData {
 	DoorChannels: DoorChannels;
-	DoorMessages: {
-		welcomeMessage: undefined;
-		goodbyMessage: undefined;
-	};
+	DoorMessages: DoorMessages;
+	users: Array<User | undefined>;
 }
 
 interface Guild {
