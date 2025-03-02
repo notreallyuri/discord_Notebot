@@ -2,7 +2,7 @@ import { REST, Routes } from "discord.js";
 import { token, clientId } from "../config.json";
 import { fileURLToPath } from "url";
 import path from "path";
-import fs from "fs";
+import { readdirSync } from "fs";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -11,9 +11,9 @@ const dirname = path.dirname(filename);
 	const commands = [];
 	const commandsPath = path.join(dirname, "commands");
 
-	const commandFiles = fs
-		.readdirSync(commandsPath)
-		.filter((f) => f.endsWith(".ts"));
+	const commandFiles = readdirSync(commandsPath).filter((f) =>
+		f.endsWith(".ts")
+	);
 
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
