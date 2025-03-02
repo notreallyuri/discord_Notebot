@@ -1,6 +1,6 @@
 import { Client, Collection } from "discord.js";
 import path from "path";
-import fs from "fs";
+import { readdirSync } from "fs";
 import { fileURLToPath } from "url";
 
 const filename = fileURLToPath(import.meta.url);
@@ -10,9 +10,9 @@ export const loadCommands = async (
 	client: Client & { commands: Collection<string, any> }
 ) => {
 	const commandsPath = path.join(dirname, "..", "commands");
-	const commandFiles = fs
-		.readdirSync(commandsPath)
-		.filter((f) => f.endsWith(".ts"));
+	const commandFiles = readdirSync(commandsPath).filter((f) =>
+		f.endsWith(".ts")
+	);
 
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
