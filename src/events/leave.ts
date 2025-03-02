@@ -10,6 +10,14 @@ export default {
 		try {
 			console.log(`Member left: ${member.user.tag}`);
 
+			
+			if (member.user.id === member.client.user.id) {
+				console.log(
+					`Bot is the member leaving guild ${member.guild.name}, skipping goodbye message`
+				);
+				return;
+			}
+
 			const doorChannels = getDoorChannels(member.guild.id);
 
 			if (!doorChannels.goodbye) {
@@ -32,14 +40,8 @@ export default {
 
 			const leaveEmbed = new EmbedBuilder()
 				.setColor("#FF0000")
-				.setTitle(`Member Left`)
-				.setDescription(`${member.user.tag} has left the server.`)
-				.addFields({
-					name: "Joined Server",
-					value: member.joinedTimestamp
-						? `<t:${Math.floor(member.joinedTimestamp / 1000)}:R>`
-						: "Unknown join date",
-				})
+				.setTitle(`${member.user.tag}`)
+				.setDescription(`has left the server.`)
 				.setTimestamp()
 				.setFooter({ text: `User ID: ${member.id}` });
 

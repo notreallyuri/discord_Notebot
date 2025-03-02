@@ -37,16 +37,11 @@ export default {
 					`Hey ${member.user.toString()}, welcome to the server! We're glad to have you here.`
 				)
 				.setThumbnail(member.user.displayAvatarURL({ size: 256 }))
-				.addFields(
-					{
-						name: "Member Count",
-						value: `You are our ${member.guild.memberCount}th member!`,
-					},
-					{
-						name: "Created Account",
-						value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>`,
-					}
-				)
+				.addFields({
+					name: "Created Account:",
+					value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>`,
+					inline: true,
+				})
 				.setTimestamp()
 				.setFooter({ text: `User ID: ${member.id}` });
 

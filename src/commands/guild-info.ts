@@ -1,29 +1,26 @@
 import {
 	SlashCommandBuilder,
 	EmbedBuilder,
-	CommandInteraction,
+	ChatInputCommandInteraction,
 } from "discord.js";
 
 export default {
 	data: new SlashCommandBuilder()
 		.setName("guild-info")
 		.setDescription("Sends guild information"),
-	async execute(interaction: CommandInteraction) {
+	async execute(interaction: ChatInputCommandInteraction) {
 		try {
-			// Defer the reply first to prevent timeout
 			await interaction.deferReply({ flags: 64 });
 
-			const guild = interaction.guild;
-			if (!guild) {
+			if (!interaction.guild) {
 				return await interaction.editReply(
 					"This command can only be used in a server."
 				);
 			}
 
-			// Fetch owner and calculate online members
-			const owner = await guild.fetchOwner();
+			const owner = await interaction.guild.fetchOwner();
 			const onlineMembers =
-				guild.members.cache.filter(
+				interaction.guild.members.cache.filter(
 					(member) =>
 						member.presence?.status === "online" ||
 						member.presence?.status === "idle" ||
@@ -32,16 +29,17 @@ export default {
 
 			const embed = new EmbedBuilder()
 				.setColor("Random")
-				.setTitle(guild.name)
+				.setThumbnail(interaction.guild.iconURL())
+				.setTitle(interaction.guild.name)
 				.setDescription(`Here's some info about the server`)
 				.addFields({
 					name: "Guild owner",
-					value: owner ? `${owner.user.username}` : "Unknown",
+					value: owner ? `${owner.user.toString()}` : "Unknown",
 				})
 				.addFields(
 					{
 						name: "Total Members",
-						value: `${guild.memberCount}`,
+						value: `${interaction.guild.memberCount}`,
 						inline: true,
 					},
 					{
@@ -52,8 +50,8 @@ export default {
 				)
 				.setTimestamp()
 				.setFooter({
-					text: `Guild ID: ${guild.id}`,
-					iconURL: guild.iconURL() || undefined,
+					text: `Guild ID: ${interaction.guild.id}`,
+					iconURL: interaction.client.user.displayAvatarURL(),
 				});
 
 			await interaction.editReply({ embeds: [embed] });

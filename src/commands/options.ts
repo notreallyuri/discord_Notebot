@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, CommandInteraction } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 
 export default {
 	data: new SlashCommandBuilder()
@@ -18,14 +18,15 @@ export default {
 				.setMinValue(1)
 				.setMaxValue(1000)
 		),
-	async execute(interaction: CommandInteraction) {
-		const boolean = interaction.options.get("boolean-option")?.value as boolean;
-		const count = interaction.options.get("number-option")?.value as number;
+	async execute(interaction: ChatInputCommandInteraction) {
+		await interaction.deferReply({ flags: 64 });
+		const boolean = interaction.options.getBoolean("boolean-option");
+		const count = interaction.options.getNumber("number-option");
 
 		if (boolean)
-			return await interaction.reply(`You selected the number: ${count}`);
+			return await interaction.editReply(`You selected the number: ${count}`);
 		else
-			return await interaction.reply(
+			return await interaction.editReply(
 				`You marked false, ${interaction.user.username}`
 			);
 	},
