@@ -5,11 +5,28 @@ export default {
 		.setName("server-info")
 		.setDescription("Provides information about the server."),
 	async execute(interaction: CommandInteraction) {
-		if (!interaction.guild)
-			return interaction.reply("This command can only be used in a server.");
+		try {
+			await interaction.deferReply({ flags: 64 });
+			
+			if (!interaction.guild) {
+				return await interaction.editReply("This command can only be used in a server.");
+			}
 
-		await interaction.reply(
-			`Server: ${interaction.guild.name} \n Member count: ${interaction.guild.memberCount}`
-		);
+			await interaction.editReply(
+				`Server: ${interaction.guild.name} \nMember count: ${interaction.guild.memberCount}`
+			);
+		} catch (error) {
+			console.error("Error in server-info command:", error);
+			
+			// Handle errors appropriately
+			if (interaction.deferred) {
+				await interaction.editReply("There was an error fetching server information.");
+			} else if (!interaction.replied) {
+				await interaction.reply({ 
+					content: "There was an error fetching server information.", 
+					flags: 64 
+				});
+			}
+		}
 	},
 };

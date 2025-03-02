@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"server": "bun run ./index.ts",
+		"start": "bun run ./index.ts",
 		"deploy": "bun run ./src/deployer.ts"
 	},
 	"dependencies": {
