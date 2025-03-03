@@ -58,9 +58,10 @@ Invite the bot to your server using the OAuth2 URL from the [Discord Developer P
 ## Commands
 | Command | Implemented | Description |
 |---------|-------------|-------------|
-| `/note add [text]` | ❌ | Adds a quick note |
-| `/note list` | ❌ | Lists all saved notes |
-| `/note delete [id]` | ❌ | Deletes a specific note |
+| `/note add [title *required*] [content]` | ✅ | Adds a quick note |
+| `/note list` | ✅ | Lists all saved notes |
+| `/note read [id]` | ✅ | Lists all saved notes |
+| `/note delete [id]` | ✅ | Deletes a specific note |
 | `/help` | ✅ | Shows available commands |
 | `/purge` | ✅ | Clears the chat with a custom amount |
 | `/set-door` | ✅ | Set default chat for welcome or goodbye messages |
