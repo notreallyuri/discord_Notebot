@@ -93,6 +93,13 @@ export async function addGuild(guildId: string): Promise<boolean> {
 
 export async function deleteGuild(guildId: string): Promise<boolean> {
 	try {
+		const guild = await db.collection("guilds").doc(guildId).get();
+
+		if (!guild.exists) {
+			console.log(`Guild ${guildId} does not exist, nothing to delete.`);
+			return false;
+		}
+
 		await db.collection("guilds").doc(guildId).delete();
 		console.log(`Deleted guild: ${guildId}`);
 		return true;
