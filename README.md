@@ -3,8 +3,8 @@
 Notepad is a Discord bot designed to enhance server utility with a set of default commands. It helps manage and streamline tasks within a server efficiently.
 
 ## Features
-- Basic server utility commands
-- Notepad-like functionality for storing quick notes (To be implemented)
+- Basic server utility commands (Implemented)
+- Notepad-like functionality for storing quick notes (Planned)
 - Customizable settings for better server management
 
 ## Installation
@@ -27,12 +27,24 @@ Notepad is a Discord bot designed to enhance server utility with a set of defaul
    npm install  # If using npm
    ```
 3. Create a `config.json` file in the root directory and add your Discord bot token:
-   ```json
-   {
-      "token": "your-token-here",
-      "clientId": "your-clientid-here"
-   }
-   ```
+   - Choose your preferred setup method: local development or cloud storage.
+      1. **Local Development:** Your `config.json` should look like this:
+         ```json
+         {
+            "token": "your-token-here",
+            "clientId": "your-clientid-here"
+         }
+         ```
+      2. **Cloud-based storage (e.g., Firebase) for easier access and deployment:**
+         ```json
+         {
+            "token": "your-token-here",
+            "clientId": "your-clientid-here",
+            "firebase": {
+               "...your-firebase-details": ""
+            }
+         }
+         ```
 4. Start the bot:
    ```sh
    bun start  # If using Bun
@@ -43,13 +55,18 @@ Notepad is a Discord bot designed to enhance server utility with a set of defaul
 ## Usage
 Invite the bot to your server using the OAuth2 URL from the [Discord Developer Portal](https://discord.com/developers/applications), then use the available commands.
 
-## Commands (To be implemented, for now it's only basic utility commands)
-| Command | Description |
-|---------|-------------|
-| `/note add [text]` | Adds a quick note |
-| `/note list` | Lists all saved notes |
-| `/note delete [id]` | Deletes a specific note |
-| `/help` | Shows available commands |
+## Commands
+| Command | Implemented | Description |
+|---------|-------------|-------------|
+| `/note add [text]` | ❌ | Adds a quick note |
+| `/note list` | ❌ | Lists all saved notes |
+| `/note delete [id]` | ❌ | Deletes a specific note |
+| `/help` | ✅ | Shows available commands |
+| `/purge` | ✅ | Clears the chat with a custom amount |
+| `/set-door` | ✅ | Set default chat for welcome or goodbye messages |
+| `/guild-info` | ✅ | Provides information for the current guild |
+
+*Planned features are marked with ❌.*
 
 ## Contributing
 Feel free to submit issues or pull requests to improve the bot.
