@@ -24,20 +24,15 @@ export interface Note {
 	content: string | null;
 }
 
-export interface User {
-	id: string;
-	notes: Array<Note | undefined>;
-}
+export type User = Record<string, Array<Note | undefined> | undefined>;
 
 export interface GuildData {
-	DoorChannels: DoorChannels;
-	DoorMessages: DoorMessages;
-	users: Array<User | undefined>;
+	DoorChannels?: DoorChannels;
+	DoorMessages?: DoorMessages;
+	users?: User;
 }
 
-interface Guild {
-	[guildId: string]: GuildData;
-}
+export type Guild = Record<string, GuildData>;
 
 export interface Guilds {
 	guilds: Guild;
@@ -72,4 +67,33 @@ export function saveGuilds(data: Guilds): boolean {
 		console.error("Error saving guild:", error);
 		return false;
 	}
+}
+
+export function addGuild(guildId: string): boolean {
+	const guildData = loadGuilds();
+
+	if (guildData.guilds[guildId]) {
+		console.log(`Guild with ID ${guildId} already exists.`);
+		return false;
+	}
+
+	guildData.guilds[guildId] = {
+		DoorChannels: undefined,
+		DoorMessages: undefined,
+		users: undefined,
+	};
+	return true;
+}
+
+export function deleteGuild(guildId: string): boolean {
+	const guildData = loadGuilds();
+
+	if (!guildData.guilds[guildId]) {
+		console.log(`Guild with ID ${guildId} doesn't exist.`);
+		return false;
+	}
+
+	delete guildData.guilds[guildId];
+
+	return saveGuilds(guildData);
 }

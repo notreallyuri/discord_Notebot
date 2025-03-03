@@ -19,10 +19,14 @@ export function setDoorChannels(
 
 	if (!guildData.guilds[guildId]) {
 		guildData.guilds[guildId] = {
-			DoorChannels: { welcome: null, goodbye: null },
-			DoorMessages: { welcomeMessage: undefined, goodbyMessage: undefined },
-			users: [undefined],
+			DoorChannels: undefined,
+			DoorMessages: undefined,
+			users: undefined,
 		};
+	}
+
+	if (!guildData.guilds[guildId].DoorChannels) {
+		guildData.guilds[guildId].DoorChannels = { welcome: null, goodbye: null };
 	}
 
 	if (welcomeChannelId !== null) {
@@ -35,5 +39,3 @@ export function setDoorChannels(
 
 	return saveGuilds(guildData);
 }
-
-export function getAllDoorChannels() {}

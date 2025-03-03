@@ -1,4 +1,5 @@
 import { Events, Guild, EmbedBuilder } from "discord.js";
+import { addGuild } from "../config/guilds";
 
 export default {
 	data: {
@@ -30,6 +31,7 @@ export default {
 					.setTimestamp()
 					.setFooter({ text: `Guild ID: ${guild.id}` });
 
+				addGuild(guild.id);
 				await systemChannel.send({ embeds: [welcomeEmbed] });
 			}
 		} catch (error) {
