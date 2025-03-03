@@ -1,10 +1,10 @@
 import { loadGuilds, saveGuilds, Note } from "./guilds";
 
-function getUserNotes(
+async function getUserNotes(
 	guildId: string,
 	userId: string
-): Array<Note | undefined> | undefined {
-	const data = loadGuilds();
+): Promise<Array<Note | undefined> | undefined> {
+	const data = await loadGuilds();
 
 	if (!data.guilds[guildId]) {
 		console.log(`Guild with ID ${guildId} doesn't exist.`);

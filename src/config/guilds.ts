@@ -1,5 +1,6 @@
 import path from "path";
 import fs from "fs";
+import { db } from "./firebase";
 
 const guildsFilePath = path.join(process.cwd(), "guilds.json");
 
@@ -42,35 +43,36 @@ export const guilds: Guilds = {
 	guilds: {},
 };
 
-export function loadGuilds(): Guilds {
+export async function loadGuilds(): Promise<Guilds> {
 	try {
-		if (!fs.existsSync(guildsFilePath)) {
-			fs.writeFileSync(guildsFilePath, JSON.stringify(guilds, null, 2));
-			return guilds;
-		}
+		const snapshot = await db.collection("guilds").get();
+		const base: Guilds = { guilds: {} };
 
-		const data = fs.readFileSync(guildsFilePath, "utf-8");
-		return JSON.parse(data);
+		snapshot.forEach((doc) => (base.guilds[doc.id] = doc.data() as Guild));
+		return guilds;
 	} catch (error) {
 		console.error("Error loading guilds:", error);
-		return guilds;
+		return { guilds: {} };
 	}
 }
 
-export function saveGuilds(data: Guilds): boolean {
+export async function saveGuilds(data: Guilds): Promise<boolean> {
 	try {
-		console.log("Writing to guilds file:", guildsFilePath);
-		fs.writeFileSync(guildsFilePath, JSON.stringify(data, null, 2));
-		console.log("Successfully wrote to guilds file!");
+		const batch = db.batch();
+		Object.entries(data).forEach(([guildId, guildData]) => {
+			const ref = db.collection("guilds").doc(guildId);
+			batch.set(ref, guildData);
+		});
+
+		await batch.commit();
 		return true;
 	} catch (error) {
-		console.error("Error saving guild:", error);
 		return false;
 	}
 }
 
-export function addGuild(guildId: string): boolean {
-	const guildData = loadGuilds();
+export async function addGuild(guildId: string): Promise<boolean> {
+	const guildData = await loadGuilds();
 
 	if (guildData.guilds[guildId]) {
 		console.log(`Guild with ID ${guildId} already exists.`);
@@ -85,8 +87,8 @@ export function addGuild(guildId: string): boolean {
 	return saveGuilds(guildData);
 }
 
-export function deleteGuild(guildId: string): boolean {
-	const guildData = loadGuilds();
+export async function deleteGuild(guildId: string): Promise<boolean> {
+	const guildData = await loadGuilds();
 
 	if (!guildData.guilds[guildId]) {
 		console.log(`Guild with ID ${guildId} doesn't exist.`);

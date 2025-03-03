@@ -1,7 +1,7 @@
 import { DoorChannels, saveGuilds, loadGuilds } from "./guilds";
 
-export function getDoorChannels(guildId: string): DoorChannels {
-	const guildData = loadGuilds();
+export async function getDoorChannels(guildId: string): Promise<DoorChannels> {
+	const guildData = await loadGuilds();
 
 	if (guildData.guilds[guildId] && guildData.guilds[guildId].DoorChannels) {
 		return guildData.guilds[guildId].DoorChannels;
@@ -10,12 +10,12 @@ export function getDoorChannels(guildId: string): DoorChannels {
 	return { welcome: null, goodbye: null };
 }
 
-export function setDoorChannels(
+export async function setDoorChannels(
 	guildId: string,
 	welcomeChannelId: string | null,
 	goodbyeChannelId: string | null
-): boolean {
-	const guildData = loadGuilds();
+): Promise<boolean> {
+	const guildData = await loadGuilds();
 
 	if (!guildData.guilds[guildId]) {
 		guildData.guilds[guildId] = {
