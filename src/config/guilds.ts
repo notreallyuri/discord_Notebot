@@ -1,8 +1,4 @@
-import path from "path";
-import fs from "fs";
 import { db } from "./firebase";
-
-const guildsFilePath = path.join(process.cwd(), "guilds.json");
 
 export interface DoorChannels {
 	welcome: string | null;
@@ -16,7 +12,7 @@ interface Message {
 
 export interface DoorMessages {
 	welcomeMessage: Message | undefined;
-	goodbyMessage: Message | undefined;
+	goodbyeMessage: Message | undefined;
 }
 
 export interface Note {
@@ -48,8 +44,8 @@ export async function loadGuilds(): Promise<Guilds> {
 		const snapshot = await db.collection("guilds").get();
 		const base: Guilds = { guilds: {} };
 
-		snapshot.forEach((doc) => (base.guilds[doc.id] = doc.data() as Guild));
-		return guilds;
+		snapshot.forEach((doc) => (base.guilds[doc.id] = doc.data() as GuildData));
+		return base;
 	} catch (error) {
 		console.error("Error loading guilds:", error);
 		return { guilds: {} };
@@ -59,7 +55,7 @@ export async function loadGuilds(): Promise<Guilds> {
 export async function saveGuilds(data: Guilds): Promise<boolean> {
 	try {
 		const batch = db.batch();
-		Object.entries(data).forEach(([guildId, guildData]) => {
+		Object.entries(data.guilds).forEach(([guildId, guildData]) => {
 			const ref = db.collection("guilds").doc(guildId);
 			batch.set(ref, guildData);
 		});
@@ -72,30 +68,36 @@ export async function saveGuilds(data: Guilds): Promise<boolean> {
 }
 
 export async function addGuild(guildId: string): Promise<boolean> {
-	const guildData = await loadGuilds();
+	try {
+		const guildRef = db.collection("guilds").doc(guildId);
+		const guild = await guildRef.get();
 
-	if (guildData.guilds[guildId]) {
-		console.log(`Guild with ID ${guildId} already exists.`);
+		if (guild.exists) {
+			console.log(`Guild with ID ${guildId} already exists.`);
+			return false;
+		}
+
+		await guildRef.set({
+			DoorChannels: undefined,
+			DoorMessages: undefined,
+			users: undefined,
+		});
+
+		console.log(`Added new guild: ${guildId}`);
+		return true;
+	} catch (error) {
+		console.error(`Error adding guild: ${guildId}, error:`, error);
 		return false;
 	}
-
-	guildData.guilds[guildId] = {
-		DoorChannels: undefined,
-		DoorMessages: undefined,
-		users: undefined,
-	};
-	return saveGuilds(guildData);
 }
 
 export async function deleteGuild(guildId: string): Promise<boolean> {
-	const guildData = await loadGuilds();
-
-	if (!guildData.guilds[guildId]) {
-		console.log(`Guild with ID ${guildId} doesn't exist.`);
+	try {
+		await db.collection("guilds").doc(guildId).delete();
+		console.log(`Deleted guild: ${guildId}`);
+		return true;
+	} catch (error) {
+		console.error("Error deleting guild:", error);
 		return false;
 	}
-
-	delete guildData.guilds[guildId];
-
-	return saveGuilds(guildData);
 }

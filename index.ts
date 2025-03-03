@@ -1,7 +1,10 @@
+import { firebaseInstance } from "@/config/firebase";
 import { Client, GatewayIntentBits, Collection, Events } from "discord.js";
 import { loadCommands } from "@/loaders/commandLoader";
 import { loadEvents } from "@/loaders/eventLoader";
 import { token } from "./config.json";
+
+firebaseInstance
 
 interface CustomClient extends Client {
 	commands: Collection<string, any>;
