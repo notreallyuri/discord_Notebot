@@ -26,9 +26,12 @@ Notepad is a Discord bot designed to enhance server utility with a set of defaul
    # or
    npm install  # If using npm
    ```
-3. Create a `.env` file in the root directory and add your Discord bot token:
-   ```env
-   DISCORD_TOKEN=your_bot_token_here
+3. Create a `config.json` file in the root directory and add your Discord bot token:
+   ```json
+   {
+      "token": "your-token-here",
+      "clientId": "your-clientid-here"
+   }
    ```
 4. Start the bot:
    ```sh
