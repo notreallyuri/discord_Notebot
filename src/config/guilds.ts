@@ -82,7 +82,7 @@ export function addGuild(guildId: string): boolean {
 		DoorMessages: undefined,
 		users: undefined,
 	};
-	return true;
+	return saveGuilds(guildData);
 }
 
 export function deleteGuild(guildId: string): boolean {
