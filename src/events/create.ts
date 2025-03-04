@@ -19,6 +19,12 @@ export default {
 						c.permissionsFor(guild.members.me).has("SendMessages")
 				);
 
+			const guildData = {
+				name: guild.name,
+				ownerId: guild.ownerId,
+				memberCount: guild.memberCount,
+			};
+
 			if (systemChannel?.isTextBased()) {
 				const welcomeEmbed = new EmbedBuilder()
 					.setColor("#00FF00")
@@ -31,7 +37,7 @@ export default {
 					.setTimestamp()
 					.setFooter({ text: `Guild ID: ${guild.id}` });
 
-				addGuild(guild.id);
+				await addGuild(guild.id, guildData);
 				await systemChannel.send({ embeds: [welcomeEmbed] });
 			}
 		} catch (error) {

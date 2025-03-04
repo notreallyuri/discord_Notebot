@@ -10,7 +10,7 @@ export default {
 		try {
 			console.log(`Bot removed from guild: ${guild.name} (${guild.id})`);
 
-			deleteGuild(guild.id);
+			await deleteGuild(guild.id);
 		} catch (error) {
 			console.error("Error in guildDelete event:", error);
 		}

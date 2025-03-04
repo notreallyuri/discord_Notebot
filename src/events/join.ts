@@ -1,5 +1,6 @@
 import { Events, GuildMember, EmbedBuilder, TextChannel } from "discord.js";
 import { getDoorChannels } from "@/config/channels";
+import { addUser, loadSingleUser } from "../config/user";
 
 export default {
 	data: {
@@ -8,9 +9,19 @@ export default {
 	},
 	async execute(member: GuildMember) {
 		try {
+			const loadUser = await loadSingleUser(member.user.id);
 			console.log(`New member joined: ${member.user.tag}`);
 
 			const doorChannels = await getDoorChannels(member.guild.id);
+
+			if (!loadUser) {
+				const userData = {
+					username: member.user.username,
+					avatarUrl: member.user.avatarURL() || member.user.defaultAvatarURL,
+				};
+
+				addUser(member.user.id, userData);
+			}
 
 			if (!doorChannels.welcome) {
 				console.log(
