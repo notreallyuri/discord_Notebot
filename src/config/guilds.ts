@@ -1,51 +1,17 @@
+import { GuildData } from "./data";
 import { db } from "./firebase";
 
-export interface DoorChannels {
-	welcome: string | null;
-	goodbye: string | null;
-}
-
-interface Message {
-	title: string | null;
-	content: string | null;
-}
-
-export interface DoorMessages {
-	welcomeMessage: Message | undefined;
-	goodbyeMessage: Message | undefined;
-}
-
-export interface Note {
-	id: number;
-	title: string;
-	content: string | null;
-}
-
-export type User = Record<string, Array<Note | undefined> | undefined>;
-
-export interface GuildData {
-	DoorChannels?: DoorChannels;
-	DoorMessages?: DoorMessages;
-	users?: User;
-}
-
-export type Guild = Record<string, GuildData>;
-
-export interface Guilds {
-	guilds: Guild;
-}
-
-export const guilds: Guilds = {
-	guilds: {},
-};
+export type Guilds = { guilds: { [guildId: string]: GuildData } };
 
 export async function loadGuilds(): Promise<Guilds> {
 	try {
 		const snapshot = await db.collection("guilds").get();
-		const base: Guilds = { guilds: {} };
+		const guilds: { [guildId: string]: GuildData } = {};
 
-		snapshot.forEach((doc) => (base.guilds[doc.id] = doc.data() as GuildData));
-		return base;
+		snapshot.forEach((doc) => {
+			guilds[doc.id] = doc.data() as GuildData;
+		});
+		return { guilds };
 	} catch (error) {
 		console.error("Error loading guilds:", error);
 		return { guilds: {} };
@@ -63,11 +29,15 @@ export async function saveGuilds(data: Guilds): Promise<boolean> {
 		await batch.commit();
 		return true;
 	} catch (error) {
+		console.error("Error saving guilds:", error);
 		return false;
 	}
 }
 
-export async function addGuild(guildId: string): Promise<boolean> {
+export async function addGuild(
+	guildId: string,
+	data?: Partial<GuildData>
+): Promise<boolean> {
 	try {
 		const guildRef = db.collection("guilds").doc(guildId);
 		const guild = await guildRef.get();
@@ -78,9 +48,11 @@ export async function addGuild(guildId: string): Promise<boolean> {
 		}
 
 		await guildRef.set({
+			name: data?.name,
+			ownerId: data?.ownerId,
+			memberCount: data?.memberCount,
 			DoorChannels: undefined,
 			DoorMessages: undefined,
-			users: undefined,
 		});
 
 		console.log(`Added new guild: ${guildId}`);

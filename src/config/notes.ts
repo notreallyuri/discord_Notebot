@@ -68,7 +68,7 @@ export async function addNote(
 		return db.runTransaction(async (transaction) => {
 			const latestUserDoc = await transaction.get(userRef);
 			const userData = latestUserDoc.data() || { notes: [] };
-			const notes = (userData.note || []) as Note[];
+			const notes = (userData.notes || []) as Note[];
 
 			const newId =
 				notes.length > 0 ? Math.max(...notes.map((note) => note.id)) + 1 : 1;
@@ -76,7 +76,7 @@ export async function addNote(
 				id: newId,
 				title,
 				content,
-				createdAt: new Date().toString(),
+				createdAt: new Date().toISOString(),
 			};
 
 			transaction.update(userRef, {
