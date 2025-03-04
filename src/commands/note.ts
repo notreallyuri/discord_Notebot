@@ -134,8 +134,10 @@ export default {
 						.setTitle(`📝 ${note.title}`)
 						.setDescription(note.content)
 						.setColor(0x3498db)
-						.setFooter({ text: `Note ID: ${note.id}` })
-						.setTimestamp();
+						.setFooter({ text: "Created at" })
+						.setTimestamp(
+							note.createdAt ? new Date(note.createdAt) : new Date()
+						);
 
 					await interaction.editReply({ embeds: [embed] });
 					break;
