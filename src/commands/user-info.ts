@@ -3,7 +3,7 @@ import {
 	ChatInputCommandInteraction,
 	EmbedBuilder,
 } from "discord.js";
-import { loadSingleUser } from "@/config/user";
+import { addUser, loadSingleUser, updateUser } from "@/config/user";
 
 export default {
 	data: new SlashCommandBuilder()
@@ -19,22 +19,37 @@ export default {
 		const selectedUser = interaction.options.getUser("user");
 		const displayUser = selectedUser || user;
 
+		const loadUser = await loadSingleUser(displayUser.id);
+
 		const userEmbed = new EmbedBuilder()
 			.setColor(0x0099ff)
 			.setTitle(`User Info: ${displayUser.username}`)
 			.setThumbnail(displayUser.displayAvatarURL())
 			.addFields(
-				{ name: "User ID", value: displayUser.id },
+				{ name: "Requested by", value: user.username, inline: true },
 				{
 					name: "Account Created",
 					value: `<t:${Math.floor(displayUser.createdTimestamp / 1000)}:R>`,
 				},
 				{ name: "Is Bot", value: displayUser.bot ? "Yes" : "No" }
-			);
-
-		userEmbed
-			.setFooter({ text: `Requested by ${user.username}` })
+			)
+			.setFooter({ text: `ID: ${displayUser.id}` })
 			.setTimestamp();
+
+		const userData = {
+			username: displayUser.username,
+			avatarUrl: displayUser.avatarURL() || displayUser.defaultAvatarURL,
+		};
+
+		if (loadUser) {
+			await updateUser(displayUser.id, userData);
+		}
+
+		if (!loadUser) {
+			if (!displayUser.bot) {
+				await addUser(displayUser.id, userData);
+			}
+		}
 
 		await interaction.editReply({ embeds: [userEmbed] });
 	},
