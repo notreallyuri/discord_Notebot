@@ -27,7 +27,13 @@ export default {
 				!interaction.memberPermissions?.has(PermissionFlagsBits.ManageMessages)
 			) {
 				return await interaction.editReply(
-					"You need the 'Manage Messages' permission to use this command."
+					"❌ You need the **Manage Messages** permission to use this command."
+				);
+			}
+
+			if (!interaction.appPermissions.has(PermissionFlagsBits.ManageMessages)) {
+				return await interaction.editReply(
+					"🚫 I don’t have the **Manage Messages** permission. Please ask a server admin to grant me the necessary permissions."
 				);
 			}
 
