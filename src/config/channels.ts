@@ -1,4 +1,5 @@
-import { DoorChannels, saveGuilds, loadGuilds } from "./guilds";
+import { saveGuilds, loadGuilds } from "./guilds";
+import { DoorChannels } from "./data";
 
 export async function getDoorChannels(guildId: string): Promise<DoorChannels> {
 	const guildData = await loadGuilds();
@@ -21,7 +22,6 @@ export async function setDoorChannels(
 		guildData.guilds[guildId] = {
 			DoorChannels: undefined,
 			DoorMessages: undefined,
-			users: undefined,
 		};
 	}
 

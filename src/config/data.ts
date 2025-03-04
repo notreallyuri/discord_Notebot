@@ -15,6 +15,8 @@ export interface Note {
 	createdAt?: string;
 }
 
+
+
 export interface UserData {
 	username?: string;
 	avatarUrl?: string;
