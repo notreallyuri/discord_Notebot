@@ -66,6 +66,7 @@ Invite the bot to your server using the OAuth2 URL from the [Discord Developer P
 | `/purge` | ✅ | Clears the chat with a custom amount |
 | `/set-door` | ✅ | Set default chat for welcome or goodbye messages |
 | `/guild-info` | ✅ | Provides information for the current guild |
+| `/user-info` | ✅ | Provides information for selected user |
 
 *Planned features are marked with ❌.*
 
@@ -74,4 +75,3 @@ Feel free to submit issues or pull requests to improve the bot.
 
 ## License
 This project is licensed under the MIT License.
-
