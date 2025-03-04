@@ -18,7 +18,7 @@ export default {
 				return;
 			}
 
-			const doorChannels = getDoorChannels(member.guild.id);
+			const doorChannels = await getDoorChannels(member.guild.id);
 
 			if (!doorChannels.goodbye) {
 				console.log(

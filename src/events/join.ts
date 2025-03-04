@@ -10,7 +10,7 @@ export default {
 		try {
 			console.log(`New member joined: ${member.user.tag}`);
 
-			const doorChannels = getDoorChannels(member.guild.id);
+			const doorChannels = await getDoorChannels(member.guild.id);
 
 			if (!doorChannels.welcome) {
 				console.log(
