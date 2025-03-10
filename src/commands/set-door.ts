@@ -4,7 +4,7 @@ import {
 	ChannelType,
 	ChatInputCommandInteraction,
 } from "discord.js";
-import { setDoorChannels } from "@/config/channels";
+import { setDoorChannels, setDoorMessage } from "@/config/channels";
 
 export default {
 	data: new SlashCommandBuilder()
@@ -13,62 +13,104 @@ export default {
 			"Set the default channel for welcome/leave messages in this guild"
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
-		.addChannelOption((option) =>
-			option
-				.setName("welcome")
-				.setDescription("The channel for welcome messages")
-				.setRequired(false)
-				.addChannelTypes(ChannelType.GuildText)
+		.addSubcommand((o) =>
+			o
+				.setName("message")
+				.setDescription("Set the message for the door")
+				.addStringOption((o) =>
+					o
+						.setName("welcome")
+						.setDescription("The message to set as welcome door")
+						.setRequired(false)
+				)
+				.addStringOption((o) =>
+					o
+						.setName("goodbye")
+						.setDescription("The message to set as goodbye door")
+						.setRequired(false)
+				)
 		)
-		.addChannelOption((option) =>
-			option
-				.setName("goodbye")
-				.setDescription("The channel for goodbye messages")
-				.setRequired(false)
-				.addChannelTypes(ChannelType.GuildText)
+		.addSubcommand((o) =>
+			o
+				.setName("channel")
+				.setDescription("Set the door channel")
+				.addChannelOption((o) =>
+					o
+						.setName("welcome")
+						.setDescription("The channel to set as welcome door")
+						.setRequired(false)
+						.addChannelTypes(ChannelType.GuildText)
+				)
+				.addChannelOption((o) =>
+					o
+						.setName("goodbye")
+						.setDescription("The channel to set as  goodbye door")
+						.setRequired(false)
+						.addChannelTypes(ChannelType.GuildText)
+				)
 		),
 	async execute(interaction: ChatInputCommandInteraction) {
-		try {
-			await interaction.deferReply({ flags: 64 });
-
-			if (!interaction.guildId)
-				return await interaction.editReply(
-					"This command can only be used in a server"
-				);
-
-			const welcomeChannel = interaction.options.getChannel("welcome");
-			const goodbyeChannel = interaction.options.getChannel("goodbye");
-
-			setDoorChannels(
-				interaction.guildId,
-				welcomeChannel?.id || null,
-				goodbyeChannel?.id || null
-			);
-
-			let response = "Door channels updated";
-
-			if (welcomeChannel)
-				response += `\nWelcome channel set to: ${welcomeChannel.toString()}`;
-
-			if (goodbyeChannel)
-				response += `\n Goodbye channel set to: ${goodbyeChannel.toString()}`;
-
-			if (!welcomeChannel && !goodbyeChannel)
-				response = "No channels were updated, please specify a channel";
-
-			await interaction.editReply(response);
-		} catch (error) {
-			console.log("Error in set-door command:", error);
-
-			if (interaction.deferred && !interaction.replied)
-				await interaction.editReply(
-					"There was an error updating the door channels."
-				);
-			else if (!interaction.replied)
-				await interaction.reply({
-					content: "There was an error updating the door channels",
-					flags: 64,
-				});
+		if (!interaction.guildId) {
+			return await interaction.editReply({
+				content: "Command `/set-door` can only be used inside a guild.",
+			});
 		}
+
+		await interaction.deferReply({ flags: 64 });
+
+		const subCommand = interaction.options.getSubcommand();
+
+		try {
+			switch (subCommand) {
+				case "channel": {
+					const welcomeChannel = interaction.options.getChannel("welcome");
+					const goodbyeChannel = interaction.options.getChannel("goodbye");
+
+					setDoorChannels(
+						interaction.guildId,
+						welcomeChannel?.id || null,
+						goodbyeChannel?.id || null
+					);
+
+					let res = "Door channels updated";
+
+					if (welcomeChannel)
+						res += `\nWelcome channel set to: ${welcomeChannel.toString()}`;
+					if (goodbyeChannel)
+						res += `\nGoodbye channel set to: ${goodbyeChannel.toString()}`;
+					if (!welcomeChannel && !goodbyeChannel)
+						res += "\nNo channels provided, please specify a channel";
+
+					await interaction.editReply({ content: res });
+					break;
+				}
+				case "message": {
+					const welcomeMessage = interaction.options.getString("welcome");
+					const goodbyeMessage = interaction.options.getString("goodbye");
+
+					setDoorMessage(
+						interaction.guildId,
+						welcomeMessage || null,
+						goodbyeMessage || null
+					);
+
+					let res = "Door messages updated";
+
+					if (welcomeMessage)
+						res += `\nWelcome message set to: \n${welcomeMessage}`;
+					if (goodbyeMessage)
+						res += `\n Goodbye channel set to: \n${goodbyeMessage}`;
+					if (!welcomeMessage && !goodbyeMessage)
+						res += "\nNo channels provided, please specify a channel";
+
+					await interaction.editReply({ content: res });
+					break;
+				}
+				default: {
+					await interaction.editReply({ content: "❌ Invalid command!" });
+					break;
+				}
+			}
+		} catch (error) {}
 	},
 };

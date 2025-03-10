@@ -1,9 +1,9 @@
-export interface Message {
-	title: string | null;
-	content: string | null;
+export interface DoorChannels {
+	welcome: string | null;
+	goodbye: string | null;
 }
 
-export interface DoorChannels {
+export interface DoorMessage {
 	welcome: string | null;
 	goodbye: string | null;
 }
@@ -14,8 +14,6 @@ export interface Note {
 	content: string | null;
 	createdAt?: string;
 }
-
-
 
 export interface UserData {
 	username?: string;
@@ -28,10 +26,7 @@ export interface GuildData {
 	ownerId?: string;
 	memberCount?: number;
 	DoorChannels?: DoorChannels;
-	DoorMessages?: {
-		welcomeMessage: Message | undefined;
-		goodbyeMessage: Message | undefined;
-	};
+	DoorMessages?: DoorMessage;
 }
 
 export interface AppData {

@@ -39,3 +39,35 @@ export async function setDoorChannels(
 
 	return saveGuilds(guildData);
 }
+
+export async function setDoorMessage(
+	guildId: string,
+	welcomeMessage: string | null,
+	goodbyeMessage: string | null
+) {
+	const guildData = await loadGuilds();
+
+	if (!guildData.guilds[guildId]) {
+		guildData.guilds[guildId] = {
+			DoorChannels: undefined,
+			DoorMessages: undefined,
+		};
+	}
+
+	if (!guildData.guilds[guildId].DoorMessages) {
+		guildData.guilds[guildId].DoorMessages = {
+			welcome: null,
+			goodbye: null,
+		};
+	}
+
+	if (welcomeMessage !== null) {
+		guildData.guilds[guildId].DoorMessages.welcome = welcomeMessage;
+	}
+
+	if (goodbyeMessage !== null) {
+		guildData.guilds[guildId].DoorMessages.goodbye = goodbyeMessage;
+	}
+
+	return saveGuilds(guildData);
+}
