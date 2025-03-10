@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
-import path from "path";
-import { readdirSync } from "fs";
 import { fileURLToPath } from "url";
+import { readdirSync } from "fs";
+import path from "path";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
