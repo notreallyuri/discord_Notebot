@@ -2,9 +2,12 @@ import { firebaseInstance } from "@/config/firebase";
 import { Client, GatewayIntentBits, Collection, Events } from "discord.js";
 import { loadCommands } from "@/handlers/commandLoader";
 import { loadEvents } from "@/handlers/eventLoader";
-import { token } from "./config.json";
+import dotenv from "dotenv";
+dotenv.config();
 
-firebaseInstance
+const token = process.env.CLIENT_TOKEN;
+
+firebaseInstance;
 
 interface CustomClient extends Client {
 	commands: Collection<string, any>;

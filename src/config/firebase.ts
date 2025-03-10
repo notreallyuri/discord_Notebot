@@ -1,14 +1,16 @@
-import { firestore, credential } from "firebase-admin";
+import { credential } from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import fs from "fs";
-import path from "path";
-
-const configPath = path.join(process.cwd(), "config.json");
-const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+import dotenv from "dotenv";
+dotenv.config();
 
 export const firebaseInstance = initializeApp({
-	credential: credential.cert(config.firebase),
+	credential: credential.cert({
+		projectId: process.env.FIREBASE_PROJECT_ID,
+		privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+		clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+	}),
 });
+
 export const db = getFirestore();
 db.settings({ ignoreUndefinedProperties: true });

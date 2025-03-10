@@ -1,11 +1,20 @@
 import { REST, Routes } from "discord.js";
-import { token, clientId } from "../config.json";
 import { fileURLToPath } from "url";
-import path from "path";
 import { readdirSync } from "fs";
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config();
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
+
+const token = process.env.CLIENT_TOKEN;
+const clientId = process.env.CLIENT_ID;
+
+if (!token || !clientId) {
+	console.error("Missing CLIENT_TOKEN or CLIENT_ID in .env file.");
+	process.exit(1);
+}
 
 (async () => {
 	const commands = [];
